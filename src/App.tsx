@@ -147,6 +147,35 @@ function App() {
             </button>
           </div>
 
+       {/* STEP 3: LAUNCH */}
+          <div>
+            <h2 className="text-xl font-bold mb-4">3. Launch Game</h2>
+            <button
+              onClick={handleStartGame}
+              disabled={status === 'loading' || status === 'success'}
+              className={`w-full flex items-center justify-center gap-4 py-8 rounded-2xl text-3xl font-black transition-all transform active:scale-[0.98] shadow-lg
+                ${status === 'loading' ? 'bg-slate-600 text-slate-400 cursor-not-allowed' : 
+                  status === 'success' ? 'bg-green-600 text-white border-4 border-green-400' : 
+                  'bg-blue-600 hover:bg-blue-500 text-white'}
+              `}
+            >
+              {status === 'loading' && <span className="animate-pulse">STARTING...</span>}
+              {status === 'success' && <><CheckCircle2 className="w-10 h-10" /> ROUND STARTED</>}
+              {status === 'idle' || status === 'error' ? <><Play className="w-10 h-10 fill-current" /> START ROUND</> : null}
+            </button>
+          </div>
+
+          {/* NEW: Paste this Error Banner back in! */}
+          {status === 'error' && (
+            <div className="bg-red-900/50 border-2 border-red-500 text-red-200 p-6 rounded-2xl flex items-start gap-4 animate-fade-in mt-4">
+              <AlertCircle className="w-8 h-8 text-red-500 shrink-0" />
+              <div>
+                <h3 className="font-bold text-lg text-red-400">Launch Failed</h3>
+                <p className="text-red-200/80">{errorMessage}</p>
+              </div>
+            </div>
+          )}
+
         </main>
       </div>
     </div>
