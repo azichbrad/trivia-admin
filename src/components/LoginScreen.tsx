@@ -26,7 +26,7 @@ export default function LoginScreen() {
     setErrorMessage('');
     const { error } = await supabase.auth.signInWithOAuth({
       provider: provider,
-      options: { redirectTo: window.location.origin }
+      options: { redirectTo: window.location.origin + '/' }
     });
     if (error) setErrorMessage(error.message);
   };
