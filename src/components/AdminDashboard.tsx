@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Play, AlertCircle, CheckCircle2, MonitorSpeaker, Gift, Plus, Trash2, LogOut, Settings, Target, Zap } from 'lucide-react';
+import { Play, AlertCircle, CheckCircle2, Gift, Plus, Trash2, LogOut, Settings, Target, Zap } from 'lucide-react';
 
 interface Props {
   venueData: any;
@@ -19,9 +19,10 @@ export default function AdminDashboard({ venueData, onLogout, onEdit }: Props) {
   useEffect(() => {
     const savedPrizes = localStorage.getItem('trivia_admin_prizes');
     if (savedPrizes) {
-      setPrizes(JSON.parse(savedPrizes));
-      if (!JSON.parse(savedPrizes).includes(selectedPrize)) {
-          setSelectedPrize(JSON.parse(savedPrizes)[0] || '');
+      const parsedPrizes = JSON.parse(savedPrizes);
+      setPrizes(parsedPrizes);
+      if (parsedPrizes.length > 0) {
+        setSelectedPrize(parsedPrizes[0]);
       }
     }
   }, []);
