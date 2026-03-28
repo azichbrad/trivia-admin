@@ -25,17 +25,20 @@ export default function LoginScreen() {
   const handleOAuthLogin = async (provider: 'google') => {
     setErrorMessage('');
     
-    // Check if we are testing on our computer or live on the internet
     const isLocal = window.location.hostname === 'localhost';
     
-    // Hardcode the exact URLs to prevent Supabase from getting confused
+    // Notice: We removed all trailing slashes to perfectly match Supabase
     const redirectUrl = isLocal 
-      ? 'http://localhost:5174/' 
-      : 'https://trivia-admin-tan.vercel.app/';
+      ? 'http://localhost:5174' 
+      : 'https://trivia-admin-tan.vercel.app';
+
+    console.log("Requesting redirect to:", redirectUrl); // Pro-tip: This helps us debug in the browser console!
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: provider,
-      options: { redirectTo: redirectUrl } 
+      options: { 
+        redirectTo: redirectUrl 
+      } 
     });
     
     if (error) setErrorMessage(error.message);
