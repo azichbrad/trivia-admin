@@ -11,6 +11,7 @@ export default function AdminDashboard({ venueData, onLogout, onEdit }: Props) {
   const [category, setCategory] = useState('NFL');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [countdown, setCountdown] = useState<number>(30);
   
   const [prizes, setPrizes] = useState<string[]>(['Free Drink', '20% Off Final Bill', 'Free French Fries']);
   const [selectedPrize, setSelectedPrize] = useState('Free Drink');
@@ -51,8 +52,12 @@ export default function AdminDashboard({ venueData, onLogout, onEdit }: Props) {
       const response = await fetch('https://trivia-api-z36k.onrender.com/api/games/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ barId: venueData.userId, category: category, prize: selectedPrize })
-      });
+        body: JSON.stringify({ 
+        barId: venueData.userId, 
+        category: category, 
+        prize: selectedPrize,
+        countdownTimer: countdown // <-- NEW: Sending the time to the server
+})      });
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Failed to start game');
@@ -176,19 +181,32 @@ export default function AdminDashboard({ venueData, onLogout, onEdit }: Props) {
           <div className="lg:col-span-5">
             <div className="bg-gradient-to-b from-[#15151a] to-[#0a0a0a] border border-zinc-800/80 rounded-xl p-6 shadow-xl shadow-black/50 h-full flex flex-col justify-between min-h-[300px]">
               
-              <div>
-                <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest mb-2">Deploy Round</h2>
-                <p className="text-zinc-500 text-sm mb-6 leading-relaxed">
-                  Make sure your TV is displaying the lobby. Launching will immediately lock answers and push the first question to all connected devices.
-                </p>
+             <div>
+             <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest mb-2">Deploy Round</h2>
 
-                {status === 'error' && (
-                  <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg flex items-start gap-3 mb-6">
-                    <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-                    <p className="text-sm">{errorMessage}</p>
-                  </div>
-                )}
-              </div>
+             {/* NEW: Timer Selection */}
+             <div className="mb-6">
+               <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2 block">Countdown Timer</label>
+               <div className="grid grid-cols-3 gap-2">
+                 {[15, 30, 60].map((time) => (
+                   <button
+                     key={time}
+                     onClick={() => setCountdown(time)}
+                     className={`py-2 rounded-lg text-sm font-bold border transition-all ${countdown === time ? 'bg-indigo-500/20 border-indigo-500 text-indigo-300' : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:border-zinc-700'}`}
+                   >
+                     {time}s
+                   </button>
+                 ))}
+               </div>
+             </div>
+
+             {status === 'error' && (
+               <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg flex items-start gap-3 mb-6">
+                 <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                 <p className="text-sm">{errorMessage}</p>
+               </div>
+             )}
+           </div>
 
               <button
                 disabled={status === 'loading' || status === 'success'}
